@@ -23,8 +23,8 @@ type Goweb struct {
 	templates map[string]*template.Template
 }
 
-func New(secret string) *Goweb {
-	g := &Goweb{Secret: secret}
+func New() *Goweb {
+	g := &Goweb{}
 
 	g.templates = make(map[string]*template.Template)
 
@@ -41,6 +41,10 @@ func New(secret string) *Goweb {
 }
 
 func (g *Goweb) Run(addr string) {
+	if g.Secret == "" {
+		panic(fmt.Errorf("must specify Secret"))
+	}
+
 	auth.Config.CookieName = "id"
 	auth.Config.CookieExp = time.Hour * 24 * 30
 	auth.Config.CookieSecret = []byte(g.Secret)
